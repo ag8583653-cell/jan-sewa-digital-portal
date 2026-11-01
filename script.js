@@ -108,21 +108,25 @@ const serviceForms = {
     `
 };
 
+// Open Citizen Service Form
 function openForm(service) {
+    if (!serviceForms[service]) {
+        alert("Service form not found!");
+        return;
+    }
+
     selectedService = service;
     verified = false;
 
     document.getElementById("formTitle").innerText = service;
-
     document.getElementById("serviceFields").innerHTML =
         serviceForms[service];
 
     document.getElementById("applicationForm").style.display = "block";
 
     const isStatus = service === "Application Status";
-    const mobileInput = document.getElementById("mobile");
 
-mobileInput.required = !isStatus;
+    document.getElementById("mobile").required = !isStatus;
 
     document.getElementById("otpSection").style.display =
         isStatus ? "none" : "block";
@@ -139,7 +143,7 @@ mobileInput.required = !isStatus;
     });
 }
 
-// Demo OTP only - real SMS verification nahi hai.
+// Demo OTP only
 function sendOTP() {
     const mobile = document.getElementById("mobile").value;
 
@@ -152,11 +156,12 @@ function sendOTP() {
     verified = false;
 
     document.getElementById("message").innerText =
-        "Demo OTP: 123456 (not a real SMS)";
+        "Demo OTP: 123456 (Not a real SMS)";
 
     document.getElementById("submitBtn").style.display = "none";
 }
 
+// Verify Demo OTP
 function verifyOTP() {
     const otp = document.getElementById("otp").value;
 
@@ -172,108 +177,113 @@ function verifyOTP() {
     }
 }
 
+// Submit Application and Check Status
 document.addEventListener("DOMContentLoaded", function () {
 
     const serviceForm = document.getElementById("serviceForm");
 
-    serviceForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
+    if (serviceForm) {
+        serviceForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-        const formData = new FormData(serviceForm);
+            const formData = new FormData(serviceForm);
 
-        // Application Status Check
-        if (selectedService === "Application Status") {
-            const number = formData.get("applicationNumber");
+            // Application Status
+            if (selectedService === "Application Status") {
+                const number = formData.get("applicationNumber");
 
-            try {
-                const response = await fetch(
-                    `${API_URL}/${encodeURIComponent(number)}`
-                );
+                try {
+                    const response = await fetch(
+                        `${API_URL}/${encodeURIComponent(number)}`
+                    );
 
-                if (!response.ok) {
-                    alert(response.status === 404
-                        ? "Application not found!"
-                        : "Unable to check application status.");
-                    return;
+                    if (!response.ok) {
+                        alert(response.status === 404
+                            ? "Application not found!"
+                            : "Unable to check application status.");
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    alert(
+                        "Application Found!\n" +
+                        "Application Number: " + result.applicationNumber +
+                        "\nService: " + result.serviceName +
+                        "\nApplicant: " + result.applicantName +
+                        "\nStatus: " + result.status
+                    );
+
+                } catch (error) {
+                    alert("Backend connection failed.");
                 }
 
-                const result = await response.json();
-
-                alert(
-                    "Application Found!\n" +
-                    "Application Number: " + result.applicationNumber +
-                    "\nService: " + result.serviceName +
-                    "\nApplicant: " + result.applicantName +
-                    "\nStatus: " + result.status
-                );
-
-            } catch (error) {
-                alert("Backend connection failed. Please check the server.");
-            }
-
-            return;
-        }
-
-        // Application Submission
-        if (!verified) {
-            alert("Please verify demo OTP first.");
-            return;
-        }
-
-        const applicantName = formData.get("name");
-
-        if (!applicantName) {
-            alert("Please enter your name.");
-            return;
-        }
-
-        const mobile = document.getElementById("mobile").value;
-
-        const applicationData = {
-            serviceName: selectedService,
-            applicantName: applicantName,
-            mobile: mobile
-        };
-
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.disabled = true;
-
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(applicationData)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                alert(result.message || "Application submission failed.");
                 return;
             }
 
-            alert(
-                result.message +
-                "\nApplication Number: " + result.applicationNumber +
-                "\nStatus: " + result.status
-            );
+            // Application Submission
+            if (!verified) {
+                alert("Please verify demo OTP first.");
+                return;
+            }
 
-            serviceForm.reset();
-            verified = false;
+            const applicantName = formData.get("name");
 
-            document.getElementById("applicationForm").style.display = "none";
+            if (!applicantName) {
+                alert("Please enter your name.");
+                return;
+            }
 
-        } catch (error) {
-            alert("Backend connection failed. Please check the server.");
-        } finally {
-            submitBtn.disabled = false;
-        }
-        // Slideshow
-let currentSlide = 0;
+            const mobile = document.getElementById("mobile").value;
 
-f// Slideshow
+            const applicationData = {
+                serviceName: selectedService,
+                applicantName: applicantName,
+                mobile: mobile
+            };
+
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(applicationData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    alert(result.message || "Application submission failed.");
+                    return;
+                }
+
+                alert(
+                    result.message +
+                    "\nApplication Number: " + result.applicationNumber +
+                    "\nStatus: " + result.status
+                );
+
+                serviceForm.reset();
+                verified = false;
+
+                document.getElementById("applicationForm").style.display =
+                    "none";
+
+            } catch (error) {
+                alert("Backend connection failed. Please check the server.");
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+});
+
+// Slideshow
 let currentSlide = 0;
 
 function showSlide(index) {
@@ -294,6 +304,7 @@ function changeSlide(direction) {
     showSlide(currentSlide + direction);
 }
 
+// Automatic Slideshow
 document.addEventListener("DOMContentLoaded", function () {
     showSlide(0);
 
