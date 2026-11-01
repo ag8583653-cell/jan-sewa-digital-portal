@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jan Seva Digital Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Government Information Bar -->
+    <div class="topbar">
+        <span>🇮🇳 Government Services Information Portal</span>
+        <span>Digital India | Citizen First</span>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🏛️</div>
+            <div>
+                <h1>JAN SEVA</h1>
+                <p>Digital Service Portal</p>
+            </div>
+        </div>
+
+        <div class="header-right" id="userArea">
+            <button onclick="openAuth('login')">👤 Login</button>
+            <button onclick="openAuth('register')">＋ Register</button>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#">⌂ Home</a>
+        <a href="#about">About Us</a>
+        <a href="#services">▦ Services</a>
+        <a href="#applicationForm">Track Status</a>
+        <a href="#contact">Contact Us</a>
+    </nav>
+
+    <!-- Main Slideshow -->
+    <section class="slideshow">
+
+        <div class="slide active">
+            <div class="slide-content">
+                <span class="hero-tag">JAN SEVA DIGITAL PORTAL</span>
+                <h1>Welcome to <span>Jan Seva Portal</span></h1>
+                <p>Citizen services made simple and accessible.</p>
+                <a href="#services">Explore Services →</a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <span class="hero-tag">DIGITAL INDIA</span>
+                <h1>Digital India, <span>Better Services</span></h1>
+                <p>Access useful citizen service information online.</p>
+                <a href="#services">View Services →</a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <span class="hero-tag">CITIZEN FIRST</span>
+                <h1>Your Services, <span>One Portal</span></h1>
+                <p>Explore applications and check their status.</p>
+                <a href="#services">Get Started →</a>
+            </div>
+        </div>
+
+        <button class="slide-btn prev" onclick="changeSlide(-1)">❮</button>
+        <button class="slide-btn next" onclick="changeSlide(1)">❯</button>
+
+        <div class="slide-dots">
+            <span class="dot active" onclick="showSlide(0)"></span>
+            <span class="dot" onclick="showSlide(1)"></span>
+            <span class="dot" onclick="showSlide(2)"></span>
+        </div>
+    </section>
+
+    <!-- Quick Information Banner -->
+    <section class="quick-info">
+        <div class="info-item">
+            <span class="info-icon">🇮🇳</span>
+            <div>
+                <h3>Digital India</h3>
+                <p>Power to Empower</p>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <span class="info-icon">📋</span>
+            <div>
+                <h3>Digital Services</h3>
+                <p>Useful citizen information</p>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <span class="info-icon">👥</span>
+            <div>
+                <h3>Your Services, One Portal</h3>
+                <p>Apply and track applications</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="auth-overlay">
+        <div class="auth-box">
+            <button class="close-btn" onclick="closeAuth()">×</button>
+            <h2>User Login</h2>
+            <p>Login to Jan Seva Digital Portal</p>
+
+            <form onsubmit="demoLogin(event)">
+                <label>Mobile Number</label>
+                <input type="tel" id="loginMobile"
+                       maxlength="10"
+                       placeholder="Enter Mobile Number" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPassword"
+                       placeholder="Enter Password" required>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p>New User?
+                <a href="#" onclick="showRegister()">Register Here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registerForm" class="auth-overlay">
+        <div class="auth-box">
+            <button class="close-btn" onclick="closeAuth()">×</button>
+            <h2>Create Account</h2>
+            <p>Register as a new user</p>
+
+            <form onsubmit="demoRegister(event)">
+                <label>Full Name</label>
+                <input type="text" id="regName"
+                       placeholder="Enter Full Name" required>
+
+                <label>Mobile Number</label>
+                <input type="tel" id="regMobile"
+                       maxlength="10"
+                       placeholder="Enter Mobile Number" required>
+
+                <label>Email Address</label>
+                <input type="email" id="regEmail"
+                       placeholder="Enter Email Address" required>
+
+                <label>Password</label>
+                <input type="password" id="regPassword"
+                       placeholder="Create Password" required>
+
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword"
+                       placeholder="Confirm Password" required>
+
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="hero" id="about">
+        <div class="hero-content">
+            <span class="hero-tag">WELCOME TO JAN SEVA</span>
+            <h1>Government Services, Now at Your Fingertips</h1>
+            <p>
+                Access citizen services, explore online applications
+                and check your application status in one place.
+            </p>
+            <a href="#services" class="hero-btn">Explore Services →</a>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="statistics">
+        <div>
+            <h3>6+</h3>
+            <p>Citizen Services</p>
+        </div>
+
+        <div>
+            <h3>24×7</h3>
+            <p>Online Access</p>
+        </div>
+
+        <div>
+            <h3>Easy</h3>
+            <p>Service Information</p>
+        </div>
+    </section>
+
+    <!-- Citizen Services -->
+    <section class="services" id="services">
+        <div class="section-heading">
+            <span>OUR SERVICES</span>
+            <h2>Citizen Services</h2>
+            <p>Explore a wide range of citizen service information</p>
+        </div>
+
+        <div class="service-box">
+
+            <div class="card" onclick="openForm('Aadhaar Services')">
+                <div class="service-icon">🪪</div>
+                <h3>Aadhaar Services</h3>
+                <p>Explore Aadhaar-related service information.</p>
+                <span>Apply Now →</span>
+            </div>
+
+            <div class="card" onclick="openForm('PAN Card Services')">
+                <div class="service-icon">📄</div>
+                <h3>PAN Card Services</h3>
+                <p>Get information about PAN card applications.</p>
+                <span>Apply Now →</span>
+            </div>
+
+            <div class="card" onclick="openForm('Voter ID Services')">
+                <div class="service-icon">🗳️</div>
+                <h3>Voter ID Services</h3>
+                <p>Explore voter ID-related information.</p>
+                <span>Apply Now →</span>
+            </div>
+
+            <div class="card" onclick="openForm('Government Schemes')">
+                <div class="service-icon">🏛️</div>
+                <h3>Government Schemes</h3>
+                <p>Discover useful government scheme information.</p>
+                <span>Explore Now →</span>
+            </div>
+
+            <div class="card" onclick="openForm('Online Application')">
+                <div class="service-icon">📝</div>
+                <h3>Online Application</h3>
+                <p>Submit your citizen service application.</p>
+                <span>Apply Now →</span>
+            </div>
+
+            <div class="card" onclick="openForm('Application Status')">
+                <div class="service-icon">🔍</div>
+                <h3>Application Status</h3>
+                <p>Check your application progress online.</p>
+                <span>Track Now →</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Application Form: Existing Backend Integration -->
+    <section id="applicationForm" class="application-form"
+             style="display:none;">
+
+        <h2 id="formTitle">Application Form</h2>
+
+        <form id="serviceForm">
+            <div id="serviceFields"></div>
+
+            <div id="otpSection"
+                 style="display:block; margin-top:15px;">
+
+                <label>Mobile Number</label>
+                <input type="tel" id="mobile"
+                       placeholder="Enter 10 digit mobile number"
+                       maxlength="10" required>
+
+                <button type="button" onclick="sendOTP()">
+                    Send Demo OTP
+                </button>
+
+                <label>Enter OTP</label>
+                <input type="text" id="otp"
+                       placeholder="Enter Demo OTP 123456"
+                       maxlength="6">
+
+                <button type="button" onclick="verifyOTP()">
+                    Verify OTP
+                </button>
+
+                <p id="message"></p>
+            </div>
+
+            <button type="submit" id="submitBtn"
+                    style="display:none;">
+                Submit Application
+            </button>
+        </form>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact-section" id="contact">
+        <h2>Need Help?</h2>
+        <p>Explore citizen service information through Jan Seva Portal.</p>
+        <a href="#services">Explore Services →</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <h2>JAN SEVA DIGITAL PORTAL</h2>
+        <p>Citizen Service Information Portal</p>
+        <p>© 2026 Jan Seva Digital Portal. All Rights Reserved.</p>
+        <small>
+            Independent citizen service information portal.
+            Not an official government website.
+        </small>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

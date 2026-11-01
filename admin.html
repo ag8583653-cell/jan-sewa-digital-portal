@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jan Seva Admin Login</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-box {
+            max-width: 350px;
+            margin: 70px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #ccc;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 11px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #123b70;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        h2, h1 {
+            color: #123b70;
+            text-align: center;
+        }
+
+        #dashboard {
+            display: none;
+        }
+
+        .table-box {
+            overflow-x: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #123b70;
+            color: white;
+        }
+
+        #message {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box" id="loginBox">
+        <h2>Admin Login</h2>
+
+        <input type="text" id="username"
+               placeholder="Enter Username">
+
+        <input type="password" id="password"
+               placeholder="Enter Password">
+
+        <button onclick="login()">Login</button>
+
+        <p id="message"></p>
+    </div>
+
+    <div id="dashboard">
+        <h1>Jan Seva Admin Panel</h1>
+
+        <button onclick="loadApplications()">Refresh Applications</button>
+        <button onclick="logout()">Logout</button>
+
+        <div class="table-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application No.</th>
+                        <th>Service</th>
+                        <th>Applicant</th>
+                        <th>Mobile</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="applicationList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5075/api";
+
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message");
+
+            try {
+                const response = await fetch(API_URL + "/admin/login", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    message.innerText = result.message;
+                    return;
+                }
+
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+
+                loadApplications();
+
+            } catch (error) {
+                message.innerText = "Backend connection failed!";
+            }
+        }
+
+        async function loadApplications() {
+            const list = document.getElementById("applicationList");
+
+            try {
+                const response = await fetch(API_URL + "/applications", {
+                    credentials: "include"
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    alert("Please login again.");
+                    logout();
+                    return;
+                }
+
+                const applications = await response.json();
+
+                list.innerHTML = "";
+
+                applications.forEach(app => {
+                    const row = document.createElement("tr");
+
+                    const values = [
+                        app.applicationNumber,
+                        app.serviceName,
+                        app.applicantName,
+                        app.mobile,
+                        app.status
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+
+                    const actionCell = document.createElement("td");
+
+                    const select = document.createElement("select");
+
+                    ["Pending", "Approved", "Rejected"].forEach(status => {
+                        const option = document.createElement("option");
+                        option.value = status;
+                        option.textContent = status;
+                        select.appendChild(option);
+                    });
+
+                    select.value = app.status;
+
+                    const button = document.createElement("button");
+                    button.textContent = "Update";
+                    button.onclick = () => updateStatus(app.applicationNumber, select.value);
+
+                    actionCell.appendChild(select);
+                    actionCell.appendChild(button);
+                    row.appendChild(actionCell);
+
+                    list.appendChild(row);
+                });
+
+            } catch (error) {
+                alert("Unable to load applications.");
+            }
+        }
+
+        async function updateStatus(number, status) {
+            try {
+                const response = await fetch(
+                    API_URL + "/applications/" +
+                    encodeURIComponent(number) + "/status",
+                    {
+                        method: "PUT",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(status)
+                    }
+                );
+
+                if (!response.ok) {
+                    alert("Status update failed!");
+                    return;
+                }
+
+                alert("Status updated successfully!");
+                loadApplications();
+
+            } catch (error) {
+                alert("Backend connection failed!");
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch(API_URL + "/admin/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } finally {
+                document.getElementById("dashboard").style.display = "none";
+                document.getElementById("loginBox").style.display = "block";
+                document.getElementById("password").value = "";
+                document.getElementById("message").innerText = "You are logged out.";
+            }
+        }
+    </script>
+
+</body>
+</html>
