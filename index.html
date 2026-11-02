@@ -2,315 +2,810 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jan Seva Digital Portal</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jan Seva Digital Portal</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* NEW HOMEPAGE DESIGN */
+
+.portal-hero {
+    background: linear-gradient(120deg,#f8eeea,#fff9f4);
+    padding: 55px 7%;
+}
+
+.portal-layout {
+    max-width: 1250px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 2fr 0.95fr;
+    gap: 35px;
+    align-items: center;
+}
+
+.portal-main {
+    text-align: center;
+}
+
+.portal-main h2 {
+    font: 48px Georgia,serif;
+    color: #211e42;
+    margin-bottom: 12px;
+}
+
+.portal-main h2 span {
+    color: #927044;
+}
+
+.portal-main > p {
+    font-size: 19px;
+    color: #343052;
+    margin-bottom: 35px;
+}
+
+.service-search {
+    background: white;
+    border: 1px solid #d9d4e2;
+    border-radius: 40px;
+    padding: 7px 10px 7px 22px;
+    display: flex;
+    align-items: center;
+    max-width: 620px;
+    margin: auto;
+}
+
+.service-search input {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    font-size: 15px;
+}
+
+.service-search button {
+    border: none;
+    background: #302b70;
+    color: white;
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 19px;
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.quick-link {
+    text-decoration: none;
+    color: #211e42;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.quick-icon {
+    width: 82px;
+    height: 82px;
+    background: white;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 34px;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 12px #0000000c;
+    transition: .3s;
+}
+
+.quick-link:hover .quick-icon {
+    transform: translateY(-5px);
+    background: #eeeaf7;
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.side-card {
+    background: white;
+    border-radius: 18px;
+    padding: 23px;
+    border: 1px solid #ece8e2;
+    box-shadow: 0 5px 18px #00000008;
+}
+
+.side-card h3 {
+    font: 23px Georgia,serif;
+    color: #29245f;
+    margin-bottom: 10px;
+}
+
+.side-card p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.side-card a {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #302b70;
+    font-weight: bold;
+}
+
+.side-card.feature {
+    background: #302b70;
+    color: white;
+}
+
+.side-card.feature h3,
+.side-card.feature p {
+    color: white;
+}
+
+.section-heading {
+    margin-bottom: 35px;
+}
+
+.section-heading h2 {
+    font-size: 34px;
+}
+
+.service-box .card {
+    min-height: 220px;
+}
+
+.training-area {
+    background: #f8f5fc;
+}
+
+.training-area .card {
+    cursor: default;
+}
+
+#trainingContent {
+    text-align: left;
+}
+
+#trainingSteps {
+    white-space: normal;
+    line-height: 2;
+}
+
+.search-note {
+    text-align: center;
+    margin-top: 15px;
+    color: #302b70;
+    font-size: 14px;
+}
+
+.portal-welcome {
+    padding: 55px 8%;
+    text-align: center;
+    background: white;
+}
+
+.portal-welcome h2 {
+    font: 34px Georgia,serif;
+    color: #29245f;
+    margin-bottom: 15px;
+}
+
+.portal-welcome p {
+    max-width: 750px;
+    margin: auto;
+    line-height: 1.8;
+    color: #666;
+}
+
+@media(max-width:850px) {
+    .portal-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .portal-main h2 {
+        font-size: 36px;
+    }
+
+    .side-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .quick-links {
+        grid-template-columns: repeat(4,1fr);
+    }
+}
+
+@media(max-width:500px) {
+    .portal-hero {
+        padding: 40px 15px;
+    }
+
+    .portal-main h2 {
+        font-size: 30px;
+    }
+
+    .quick-icon {
+        width: 58px;
+        height: 58px;
+        font-size: 25px;
+    }
+
+    .quick-link {
+        font-size: 11px;
+    }
+
+    .side-panel {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Top Government Information Bar -->
-    <div class="topbar">
-        <span>🇮🇳 Government Services Information Portal</span>
-        <span>Digital India | Citizen First</span>
-    </div>
+<!-- TOP BAR -->
+<div class="topbar">
+    <span>🇮🇳 Government Services Information Portal</span>
+    <span>Digital India | Citizen First</span>
+</div>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <div class="logo-icon">🏛️</div>
-            <div>
-                <h1>JAN SEVA</h1>
-                <p>Digital Service Portal</p>
-            </div>
-        </div>
+<p id="statusResult"></p>
 
-        <div class="header-right" id="userArea">
-            <button onclick="openAuth('login')">👤 Login</button>
-            <button onclick="openAuth('register')">＋ Register</button>
-        </div>
-    </header>
-
-    <!-- Navigation -->
-    <nav>
-        <a href="#">⌂ Home</a>
-        <a href="#about">About Us</a>
-        <a href="#services">▦ Services</a>
-        <a href="#applicationForm">Track Status</a>
-        <a href="#contact">Contact Us</a>
-    </nav>
-
-    <!-- Main Slideshow -->
-    <section class="slideshow">
-
-        <div class="slide active">
-            <div class="slide-content">
-                <span class="hero-tag">JAN SEVA DIGITAL PORTAL</span>
-                <h1>Welcome to <span>Jan Seva Portal</span></h1>
-                <p>Citizen services made simple and accessible.</p>
-                <a href="#services">Explore Services →</a>
-            </div>
-        </div>
-
-        <div class="slide">
-            <div class="slide-content">
-                <span class="hero-tag">DIGITAL INDIA</span>
-                <h1>Digital India, <span>Better Services</span></h1>
-                <p>Access useful citizen service information online.</p>
-                <a href="#services">View Services →</a>
-            </div>
-        </div>
-
-        <div class="slide">
-            <div class="slide-content">
-                <span class="hero-tag">CITIZEN FIRST</span>
-                <h1>Your Services, <span>One Portal</span></h1>
-                <p>Explore applications and check their status.</p>
-                <a href="#services">Get Started →</a>
-            </div>
-        </div>
-
-        <button class="slide-btn prev" onclick="changeSlide(-1)">❮</button>
-        <button class="slide-btn next" onclick="changeSlide(1)">❯</button>
-
-        <div class="slide-dots">
-            <span class="dot active" onclick="showSlide(0)"></span>
-            <span class="dot" onclick="showSlide(1)"></span>
-            <span class="dot" onclick="showSlide(2)"></span>
-        </div>
-    </section>
-
-    <!-- Quick Information Banner -->
-    <section class="quick-info">
-        <div class="info-item">
-            <span class="info-icon">🇮🇳</span>
-            <div>
-                <h3>Digital India</h3>
-                <p>Power to Empower</p>
-            </div>
-        </div>
-
-        <div class="info-item">
-            <span class="info-icon">📋</span>
-            <div>
-                <h3>Digital Services</h3>
-                <p>Useful citizen information</p>
-            </div>
-        </div>
-
-        <div class="info-item">
-            <span class="info-icon">👥</span>
-            <div>
-                <h3>Your Services, One Portal</h3>
-                <p>Apply and track applications</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Login Form -->
-    <div id="loginForm" class="auth-overlay">
-        <div class="auth-box">
-            <button class="close-btn" onclick="closeAuth()">×</button>
-            <h2>User Login</h2>
-            <p>Login to Jan Seva Digital Portal</p>
-
-            <form onsubmit="demoLogin(event)">
-                <label>Mobile Number</label>
-                <input type="tel" id="loginMobile"
-                       maxlength="10"
-                       placeholder="Enter Mobile Number" required>
-
-                <label>Password</label>
-                <input type="password" id="loginPassword"
-                       placeholder="Enter Password" required>
-
-                <button type="submit">Login</button>
-            </form>
-
-            <p>New User?
-                <a href="#" onclick="showRegister()">Register Here</a>
-            </p>
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <div class="logo-icon">🏛️</div>
+        <div>
+            <h1>JAN SEVA</h1>
+            <p>Digital Service Portal</p>
         </div>
     </div>
 
-    <!-- Registration Form -->
-    <div id="registerForm" class="auth-overlay">
-        <div class="auth-box">
-            <button class="close-btn" onclick="closeAuth()">×</button>
-            <h2>Create Account</h2>
-            <p>Register as a new user</p>
+    <div class="header-right" id="userArea">
+        <button onclick="openAuth('login')">👤 Login</button>
+        <button onclick="openAuth('register')">＋ Register</button>
+    </div>
+</header>
 
-            <form onsubmit="demoRegister(event)">
-                <label>Full Name</label>
-                <input type="text" id="regName"
-                       placeholder="Enter Full Name" required>
+<!-- NAVIGATION -->
+<nav>
+    <a href="#">⌂ Home</a>
+    <a href="#about">About Us</a>
+    <a href="#services">Services</a>
+    <a href="#training">Practical Training</a>
+    <a href="#applicationForm">Track Status</a>
+    <a href="#contact">Contact</a>
+</nav>
 
-                <label>Mobile Number</label>
-                <input type="tel" id="regMobile"
-                       maxlength="10"
-                       placeholder="Enter Mobile Number" required>
+<!-- MAIN HOMEPAGE -->
+<section class="portal-hero">
 
-                <label>Email Address</label>
-                <input type="email" id="regEmail"
-                       placeholder="Enter Email Address" required>
+<div class="portal-layout">
 
-                <label>Password</label>
-                <input type="password" id="regPassword"
-                       placeholder="Create Password" required>
+    <!-- LEFT SIDE -->
+    <div class="portal-main">
 
-                <label>Confirm Password</label>
-                <input type="password" id="confirmPassword"
-                       placeholder="Confirm Password" required>
+        <h2>Welcome to <span>Jan Seva</span></h2>
 
-                <button type="submit">Create Account</button>
-            </form>
+        <p>What service do you need today?</p>
+
+        <!-- SEARCH SERVICES -->
+        <div class="service-search">
+            <input
+                type="search"
+                id="serviceSearch"
+                placeholder="Search Aadhaar, PAN, Voter ID services..."
+                oninput="filterServices(this.value)"
+            >
+            <button onclick="filterServices(document.getElementById('serviceSearch').value)">⌕</button>
         </div>
+
+        <p class="search-note">
+            Search and explore citizen services in one place.
+        </p>
+
+        <!-- QUICK SERVICES -->
+        <div class="quick-links">
+
+            <a href="#services" class="quick-link">
+                <div class="quick-icon">🪪</div>
+                Update Services
+            </a>
+
+            <a href="#services" class="quick-link">
+                <div class="quick-icon">📥</div>
+                Get Documents
+            </a>
+
+            <a href="#services" class="quick-link">
+                <div class="quick-icon">🛡️</div>
+                Digital Security
+            </a>
+
+            <a href="#training" class="quick-link">
+                <div class="quick-icon">🎓</div>
+                Training Center
+            </a>
+
+        </div>
+
     </div>
 
-    <!-- About Section -->
-    <section class="hero" id="about">
-        <div class="hero-content">
-            <span class="hero-tag">WELCOME TO JAN SEVA</span>
-            <h1>Government Services, Now at Your Fingertips</h1>
-            <p>
-                Access citizen services, explore online applications
-                and check your application status in one place.
-            </p>
-            <a href="#services" class="hero-btn">Explore Services →</a>
-        </div>
-    </section>
+    <!-- RIGHT SIDE INFORMATION -->
+    <div class="side-panel">
 
-    <!-- Statistics -->
-    <section class="statistics">
-        <div>
-            <h3>6+</h3>
-            <p>Citizen Services</p>
+        <div class="side-card feature">
+            <h3>Jan Seva Digital Portal</h3>
+            <p>Explore important citizen services from one convenient platform.</p>
+            <a href="#services" style="color:white;">
+                Explore Services →
+            </a>
         </div>
 
-        <div>
-            <h3>24×7</h3>
-            <p>Online Access</p>
+        <div class="side-card">
+            <h3>Did You Know?</h3>
+            <p>Digital services can help citizens access important information and documents online.</p>
+            <a href="#about">Know More →</a>
         </div>
 
-        <div>
-            <h3>Easy</h3>
-            <p>Service Information</p>
-        </div>
-    </section>
-
-    <!-- Citizen Services -->
-    <section class="services" id="services">
-        <div class="section-heading">
-            <span>OUR SERVICES</span>
-            <h2>Citizen Services</h2>
-            <p>Explore a wide range of citizen service information</p>
+        <div class="side-card">
+            <h3>Learn Digital Services</h3>
+            <p>Learn DigiLocker, Aadhaar and PAN card procedures through practical training.</p>
+            <a href="#training">Start Learning →</a>
         </div>
 
-        <div class="service-box">
+    </div>
 
-            <div class="card" onclick="openForm('Aadhaar Services')">
-                <div class="service-icon">🪪</div>
-                <h3>Aadhaar Services</h3>
-                <p>Explore Aadhaar-related service information.</p>
-                <span>Apply Now →</span>
-            </div>
+</div>
+</section>
 
-            <div class="card" onclick="openForm('PAN Card Services')">
-                <div class="service-icon">📄</div>
-                <h3>PAN Card Services</h3>
-                <p>Get information about PAN card applications.</p>
-                <span>Apply Now →</span>
-            </div>
+<!-- ABOUT -->
+<section class="portal-welcome" id="about">
+    <h2>Government Services at Your Fingertips</h2>
+    <p>
+        Welcome to Jan Seva Digital Portal. Explore citizen service
+        information, learn digital procedures, access useful application
+        guidance and check your application progress in one place.
+    </p>
+</section>
 
-            <div class="card" onclick="openForm('Voter ID Services')">
-                <div class="service-icon">🗳️</div>
-                <h3>Voter ID Services</h3>
-                <p>Explore voter ID-related information.</p>
-                <span>Apply Now →</span>
-            </div>
+<!-- STATISTICS -->
+<section class="statistics">
+    <div>
+        <h3>6+</h3>
+        <p>Citizen Services</p>
+    </div>
 
-            <div class="card" onclick="openForm('Government Schemes')">
-                <div class="service-icon">🏛️</div>
-                <h3>Government Schemes</h3>
-                <p>Discover useful government scheme information.</p>
-                <span>Explore Now →</span>
-            </div>
+    <div>
+        <h3>24×7</h3>
+        <p>Online Access</p>
+    </div>
 
-            <div class="card" onclick="openForm('Online Application')">
-                <div class="service-icon">📝</div>
-                <h3>Online Application</h3>
-                <p>Submit your citizen service application.</p>
-                <span>Apply Now →</span>
-            </div>
+    <div>
+        <h3>3+</h3>
+        <p>Training Courses</p>
+    </div>
+</section>
 
-            <div class="card" onclick="openForm('Application Status')">
-                <div class="service-icon">🔍</div>
-                <h3>Application Status</h3>
-                <p>Check your application progress online.</p>
-                <span>Track Now →</span>
-            </div>
+<!-- CITIZEN SERVICES -->
+<section class="services" id="services">
 
+    <div class="section-heading">
+        <span>OUR SERVICES</span>
+        <h2>Find Services Relevant to You</h2>
+        <p>Explore useful citizen service information</p>
+    </div>
+
+    <div class="service-box" id="citizenServices">
+
+        <div class="card" onclick="openForm('Aadhaar Services')">
+            <div class="service-icon">🪪</div>
+            <h3>Aadhaar Services</h3>
+            <p>Explore Aadhaar-related service information.</p>
+            <span>Apply Now →</span>
         </div>
-    </section>
 
-    <!-- Application Form: Existing Backend Integration -->
-    <section id="applicationForm" class="application-form"
-             style="display:none;">
+        <div class="card" onclick="openForm('PAN Card Services')">
+            <div class="service-icon">📄</div>
+            <h3>PAN Card Services</h3>
+            <p>Get information about PAN card applications.</p>
+            <span>Apply Now →</span>
+        </div>
 
-        <h2 id="formTitle">Application Form</h2>
+        <div class="card" onclick="openForm('Voter ID Services')">
+            <div class="service-icon">🗳️</div>
+            <h3>Voter ID Services</h3>
+            <p>Explore voter ID-related information.</p>
+            <span>Apply Now →</span>
+        </div>
 
-        <form id="serviceForm">
-            <div id="serviceFields"></div>
+        <div class="card" onclick="openForm('Government Schemes')">
+            <div class="service-icon">🏛️</div>
+            <h3>Government Schemes</h3>
+            <p>Discover useful government scheme information.</p>
+            <span>Explore Now →</span>
+        </div>
 
-            <div id="otpSection"
-                 style="display:block; margin-top:15px;">
+        <div class="card" onclick="openForm('Online Application')">
+            <div class="service-icon">📝</div>
+            <h3>Online Application</h3>
+            <p>Submit your citizen service application.</p>
+            <span>Apply Now →</span>
+        </div>
 
-                <label>Mobile Number</label>
-                <input type="tel" id="mobile"
-                       placeholder="Enter 10 digit mobile number"
-                       maxlength="10" required>
+        <div class="card" onclick="openForm('Application Status')">
+            <div class="service-icon">🔍</div>
+            <h3>Application Status</h3>
+            <p>Check your application progress online.</p>
+            <span>Track Now →</span>
+        </div>
 
-                <button type="button" onclick="sendOTP()">
-                    Send Demo OTP
-                </button>
+    </div>
 
-                <label>Enter OTP</label>
-                <input type="text" id="otp"
-                       placeholder="Enter Demo OTP 123456"
-                       maxlength="6">
+    <p id="noSearchResult" style="display:none;text-align:center;margin-top:20px;">
+        No matching services found.
+    </p>
 
-                <button type="button" onclick="verifyOTP()">
-                    Verify OTP
-                </button>
+</section>
 
-                <p id="message"></p>
-            </div>
+<!-- LOGIN FORM -->
+<div id="loginForm" class="auth-overlay">
 
-            <button type="submit" id="submitBtn"
-                    style="display:none;">
-                Submit Application
-            </button>
+    <div class="auth-box">
+        <button class="close-btn" onclick="closeAuth()">×</button>
+
+        <h2>User Login</h2>
+        <p>Login to Jan Seva Digital Portal</p>
+
+        <form onsubmit="demoLogin(event)">
+
+            <label>Mobile Number</label>
+            <input type="tel" id="loginMobile"
+                maxlength="10"
+                placeholder="Enter Mobile Number" required>
+
+            <label>Password</label>
+            <input type="password" id="loginPassword"
+                placeholder="Enter Password" required>
+
+            <button type="submit">Login</button>
         </form>
-    </section>
 
-    <!-- Contact -->
-    <section class="contact-section" id="contact">
-        <h2>Need Help?</h2>
-        <p>Explore citizen service information through Jan Seva Portal.</p>
-        <a href="#services">Explore Services →</a>
-    </section>
+        <p>New User?
+            <a href="#" onclick="showRegister()">Register Here</a>
+        </p>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <h2>JAN SEVA DIGITAL PORTAL</h2>
-        <p>Citizen Service Information Portal</p>
-        <p>© 2026 Jan Seva Digital Portal. All Rights Reserved.</p>
-        <small>
-            Independent citizen service information portal.
-            Not an official government website.
-        </small>
-    </footer>
+<!-- REGISTER FORM -->
+<div id="registerForm" class="auth-overlay">
 
-    <script src="script.js"></script>
+    <div class="auth-box">
+        <button class="close-btn" onclick="closeAuth()">×</button>
+
+        <h2>Create Account</h2>
+        <p>Register as a new user</p>
+
+        <form onsubmit="demoRegister(event)">
+
+            <label>Full Name</label>
+            <input type="text" id="regName"
+                placeholder="Enter Full Name" required>
+
+            <label>Mobile Number</label>
+            <input type="tel" id="regMobile"
+                maxlength="10"
+                placeholder="Enter Mobile Number" required>
+
+            <label>Email Address</label>
+            <input type="email" id="regEmail"
+                placeholder="Enter Email Address" required>
+
+            <label>Password</label>
+            <input type="password" id="regPassword"
+                placeholder="Create Password" required>
+
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword"
+                placeholder="Confirm Password" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
+</div>
+
+<!-- APPLICATION FORM -->
+<section id="applicationForm" class="application-form"
+    style="display:none;">
+
+    <h2 id="formTitle">Application Form</h2>
+
+    <form id="serviceForm">
+
+        <div id="serviceFields"></div>
+
+        <div id="otpSection"
+            style="display:block;margin-top:15px;">
+
+            <label>Mobile Number</label>
+            <input type="tel" id="mobile"
+                placeholder="Enter 10 digit mobile number"
+                maxlength="10" required>
+
+            <button type="button" onclick="sendOTP()">
+                Send Demo OTP
+            </button>
+
+            <label>Enter OTP</label>
+            <input type="text" id="otp"
+                placeholder="Enter Demo OTP 123456"
+                maxlength="6">
+
+            <button type="button" onclick="verifyOTP()">
+                Verify OTP
+            </button>
+
+            <p id="message"></p>
+
+        </div>
+
+        <button type="submit" id="submitBtn"
+            style="display:none;">
+            Submit Application
+        </button>
+
+    </form>
+</section>
+
+<!-- DIGILOCKER LEARNING CENTER -->
+
+<section class="services" id="digilocker">
+
+    <div class="section-heading">
+        <span>DIGITAL DOCUMENT SERVICES</span>
+        <h2>DigiLocker Learning Center</h2>
+        <p>Learn how to access, manage and share digital documents</p>
+    </div>
+
+    <div class="service-box">
+
+        <div class="card">
+            <div class="service-icon">📱</div>
+            <h3>What is DigiLocker?</h3>
+            <p>Learn about India's digital document wallet and its benefits.</p>
+            <span onclick="showTraining('digilocker')">Learn More →</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">🪪</div>
+            <h3>Aadhaar Access</h3>
+            <p>Learn how Aadhaar can be used during DigiLocker account setup.</p>
+            <span onclick="showTraining('digilocker')">Learn More →</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">📂</div>
+            <h3>Fetch Documents</h3>
+            <p>Understand how to search for and fetch issued documents.</p>
+            <span onclick="showTraining('digilocker')">Learn More →</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">📜</div>
+            <h3>Issued Documents</h3>
+            <p>Learn how to view and access documents issued by organisations.</p>
+            <span onclick="showTraining('digilocker')">Learn More →</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">📤</div>
+            <h3>Document Sharing</h3>
+            <p>Learn how to share digital documents securely.</p>
+            <span onclick="showTraining('digilocker')">Learn More →</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">🎓</div>
+            <h3>Practical Tutorial</h3>
+            <p>Follow a step-by-step DigiLocker learning tutorial.</p>
+            <span onclick="showTraining('digilocker')">Start Learning →</span>
+        </div>
+
+    </div>
+
+    <div class="side-card" style="margin-top:30px;text-align:center;">
+        <h2 style="color:#29245f;">Explore Official DigiLocker</h2>
+        <p>Visit the official platform to access your digital documents.</p>
+        <a href="https://www.digilocker.gov.in/" target="_blank">
+            Visit DigiLocker Official Website →
+        </a>
+    </div>
+
+</section>
+
+<!-- SAMPLE DOCUMENT DASHBOARD -->
+
+<section class="services" style="background:#f4f0fa;">
+
+    <div class="section-heading">
+        <span>DEMO DOCUMENT WALLET</span>
+        <h2>My Digital Documents</h2>
+        <p>Sample document cards for website demonstration</p>
+    </div>
+
+    <div class="service-box">
+
+        <div class="card">
+            <div class="service-icon">🪪</div>
+            <h3>Aadhaar Card</h3>
+            <p>Sample digital identity document</p>
+            <span>Demo Document</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">📄</div>
+            <h3>PAN Card</h3>
+            <p>Sample PAN document information</p>
+            <span>Demo Document</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">🎓</div>
+            <h3>Marksheet</h3>
+            <p>Sample educational certificate</p>
+            <span>Demo Document</span>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">🚗</div>
+            <h3>Driving Licence</h3>
+            <p>Sample driving licence information</p>
+            <span>Demo Document</span>
+        </div>
+
+    </div>
+
+    <p style="text-align:center;color:#777;margin-top:20px;">
+        Note: These are demonstration cards, not actual stored documents.
+    </p>
+
+</section>
+
+<!-- PRACTICAL TRAINING -->
+<section class="services training-area" id="training">
+
+    <div class="section-heading">
+        <span>LEARN BY DOING</span>
+        <h2>Practical Training Center</h2>
+        <p>Learn Digital Services Step by Step</p>
+    </div>
+
+    <div class="service-box">
+
+        <div class="card">
+            <div class="service-icon">📱</div>
+            <h3>DigiLocker Training</h3>
+            <p>Account creation, document download and sharing.</p>
+            <button onclick="showTraining('digilocker')">
+                Start Practical →
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">🪪</div>
+            <h3>Aadhaar Training</h3>
+            <p>e-Aadhaar download, PVC card and update services.</p>
+            <button onclick="showTraining('aadhaar')">
+                Start Practical →
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="service-icon">📄</div>
+            <h3>PAN Card Training</h3>
+            <p>New PAN, correction and e-PAN download.</p>
+            <button onclick="showTraining('pan')">
+                Start Practical →
+            </button>
+        </div>
+
+    </div>
+
+    <!-- TRAINING DETAILS -->
+    <div id="trainingContent" style="display:none; margin-top:35px;">
+
+        <div class="card" style="padding:30px; cursor:default;">
+
+            <h2 id="trainingTitle"></h2>
+
+            <p id="trainingDescription"></p>
+
+            <div id="trainingSteps"></div>
+
+            <div style="display:flex; gap:10px; margin-top:25px; flex-wrap:wrap;">
+
+                <button onclick="previousTrainingStep()">
+                    ← Previous
+                </button>
+
+                <button onclick="nextTrainingStep()">
+                    Next →
+                </button>
+
+                <button onclick="completeTraining()">
+                    Finish Training
+                </button>
+
+            </div>
+
+            <button onclick="closeTraining()" style="margin-top:15px;">
+                Close Training
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+    <h2>Need Help?</h2>
+    <p>Explore citizen service information through Jan Seva Portal.</p>
+    <a href="#services">Explore Services →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <h2>JAN SEVA DIGITAL PORTAL</h2>
+    <p>Citizen Service Information Portal</p>
+    <p>© 2026 Jan Seva Digital Portal. All Rights Reserved.</p>
+    <small>
+        Independent citizen service information portal.
+        Not an official government website.
+    </small>
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+// SERVICE SEARCH
+function filterServices(searchText) {
+
+    const cards = document.querySelectorAll(
+        "#citizenServices .card"
+    );
+
+    let found = 0;
+    const search = searchText.toLowerCase().trim();
+
+    cards.forEach(function(card) {
+
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(search)) {
+            card.style.display = "";
+            found++;
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+    document.getElementById("noSearchResult").style.display =
+        found === 0 ? "block" : "none";
+}
+</script>
+
 </body>
 </html>
