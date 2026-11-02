@@ -1,9 +1,9 @@
-
 let selectedService = "";
 let generatedOTP = "123456";
 let verified = false;
 
-const API_URL = "http://localhost:5075/api/applications";
+
+const API_URL = "http://127.0.0.1:5075/api/applications";
 
 const serviceForms = {
     "Aadhaar Services": `
@@ -108,8 +108,10 @@ const serviceForms = {
     `
 };
 
+
 // Open Citizen Service Form
 function openForm(service) {
+
     if (!serviceForms[service]) {
         alert("Service form not found!");
         return;
@@ -119,20 +121,14 @@ function openForm(service) {
     verified = false;
 
     document.getElementById("formTitle").innerText = service;
-    document.getElementById("serviceFields").innerHTML =
-        serviceForms[service];
-
+    document.getElementById("serviceFields").innerHTML = serviceForms[service];
     document.getElementById("applicationForm").style.display = "block";
 
     const isStatus = service === "Application Status";
 
     document.getElementById("mobile").required = !isStatus;
-
-    document.getElementById("otpSection").style.display =
-        isStatus ? "none" : "block";
-
-    document.getElementById("submitBtn").style.display =
-        isStatus ? "block" : "none";
+    document.getElementById("otpSection").style.display = isStatus ? "none" : "block";
+    document.getElementById("submitBtn").style.display = isStatus ? "block" : "none";
 
     document.getElementById("mobile").value = "";
     document.getElementById("otp").value = "";
@@ -143,8 +139,10 @@ function openForm(service) {
     });
 }
 
-// Demo OTP only
+
+// Demo OTP
 function sendOTP() {
+
     const mobile = document.getElementById("mobile").value;
 
     if (!/^[0-9]{10}$/.test(mobile)) {
@@ -161,8 +159,10 @@ function sendOTP() {
     document.getElementById("submitBtn").style.display = "none";
 }
 
-// Verify Demo OTP
+
+// Verify OTP
 function verifyOTP() {
+
     const otp = document.getElementById("otp").value;
 
     if (otp === generatedOTP) {
@@ -172,143 +172,211 @@ function verifyOTP() {
             "Demo OTP Verified Successfully!";
 
         document.getElementById("submitBtn").style.display = "block";
+
     } else {
         alert("Wrong OTP! Demo OTP is 123456");
     }
-}
+    // APPLICATION SUBMIT AND STATUS CHECK
 
-// Submit Application and Check Status
-document.addEventListener("DOMContentLoaded", function () {
+document.getElementById("serviceForm").addEventListener("submit", async function (event) {
 
-    const serviceForm = document.getElementById("serviceForm");
+    event.preventDefault();
 
-    if (serviceForm) {
-        serviceForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
+    // Application Status Check
+    if (selectedService === "Application Status") {
 
-            const formData = new FormData(serviceForm);
+        const number = document.querySelector(
+            '[name="applicationNumber"]'
+        ).value.trim();
 
-            // Application Status
-            if (selectedService === "Application Status") {
-                const number = formData.get("applicationNumber");
+        try {
+            const response = await fetch(
+                `${API_URL}/${encodeURIComponent(number)}`
+            );
 
-                try {
-                    const response = await fetch(
-                        `${API_URL}/${encodeURIComponent(number)}`
-                    );
-
-                    if (!response.ok) {
-                        alert(response.status === 404
-                            ? "Application not found!"
-                            : "Unable to check application status.");
-                        return;
-                    }
-
-                    const result = await response.json();
-
-                    alert(
-                        "Application Found!\n" +
-                        "Application Number: " + result.applicationNumber +
-                        "\nService: " + result.serviceName +
-                        "\nApplicant: " + result.applicantName +
-                        "\nStatus: " + result.status
-                    );
-
-                } catch (error) {
-                    alert("Backend connection failed.");
-                }
-
+            if (!response.ok) {
+                alert("Application not found!");
                 return;
             }
 
-            // Application Submission
-            if (!verified) {
-                alert("Please verify demo OTP first.");
-                return;
-            }
+            const data = await response.json();
 
-            const applicantName = formData.get("name");
+            alert(
+                "Application Number: " + data.applicationNumber +
+                "\nStatus: " + data.status
+            );
 
-            if (!applicantName) {
-                alert("Please enter your name.");
-                return;
-            }
+        } catch (error) {
+            alert("Backend connection error!");
+        }
 
-            const mobile = document.getElementById("mobile").value;
-
-            const applicationData = {
-                serviceName: selectedService,
-                applicantName: applicantName,
-                mobile: mobile
-            };
-
-            const submitBtn = document.getElementById("submitBtn");
-            submitBtn.disabled = true;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(applicationData)
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    alert(result.message || "Application submission failed.");
-                    return;
-                }
-
-                alert(
-                    result.message +
-                    "\nApplication Number: " + result.applicationNumber +
-                    "\nStatus: " + result.status
-                );
-
-                serviceForm.reset();
-                verified = false;
-
-                document.getElementById("applicationForm").style.display =
-                    "none";
-
-            } catch (error) {
-                alert("Backend connection failed. Please check the server.");
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
+        return;
     }
 
+    // OTP Verification
+    if (!verified) {
+        alert("Please verify OTP first!");
+        return;
+    }
+
+    const formData = new FormData(this);
+
+    const applicantName = formData.get("name");
+
+    const applicationData = {
+        ApplicantName: applicantName,
+        Mobile: document.getElementById("mobile").value,
+        ServiceName: selectedService
+    };
+
+    try {
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(applicationData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert("Error: " + JSON.stringify(data));
+            return;
+        }
+
+        document.getElementById("message").innerHTML =
+            "Application Submitted Successfully!<br>" +
+            "Application ID: <strong>" +
+            data.applicationNumber +
+            "</strong><br>Status: " + data.status;
+
+        document.getElementById("submitBtn").style.display = "none";
+
+        alert("Your Application ID is: " + data.applicationNumber);
+        // Close form after successful submission
+document.getElementById("applicationForm").style.display = "none";
+
+// Reset form
+this.reset();
+
+// Reset OTP verification
+verified = false;
+
+    } catch (error) {
+
+        alert("Backend connection failed! Please check your API.");
+
+        console.error(error);
+    }
 });
 
-// Slideshow
-let currentSlide = 0;
+// PRACTICAL TRAINING CENTER
 
-function showSlide(index) {
-    const slides = document.querySelectorAll(".slideshow .slide");
+let currentTraining = "";
+let currentStep = 0;
 
-    if (slides.length === 0) return;
 
-    currentSlide = (index + slides.length) % slides.length;
+const trainingData = {
+    digilocker: {
+        title: "DigiLocker Practical Training",
+        steps: [
+            "Step 1: DigiLocker ki official website digilocker.gov.in kholo.",
+            "Step 2: Sign In ya Create Account par click karo.",
+            "Step 3: Apna mobile number enter karo.",
+            "Step 4: OTP verify karo.",
+            "Step 5: Aadhaar details se account setup karo.",
+            "Step 6: Issued Documents section mein documents dekho."
+        ]
+    },
 
-    slides.forEach(slide => {
-        slide.classList.remove("active");
-    });
+    aadhaar: {
+        title: "Aadhaar Practical Training",
+        steps: [
+            "Step 1: UIDAI ki official website uidai.gov.in kholo.",
+            "Step 2: My Aadhaar section par jao.",
+            "Step 3: Download Aadhaar option select karo.",
+            "Step 4: Aadhaar number ya VID enter karo.",
+            "Step 5: Captcha aur OTP verification complete karo.",
+            "Step 6: Aadhaar PDF download karo."
+        ]
+    },
 
-    slides[currentSlide].classList.add("active");
+    pan: {
+        title: "PAN Card Practical Training",
+        steps: [
+            "Step 1: Income Tax ya authorised PAN service ki official website kholo.",
+            "Step 2: New PAN application option select karo.",
+            "Step 3: Applicant ki details bharo.",
+            "Step 4: Required documents upload karo.",
+            "Step 5: Details verify karke application submit karo.",
+            "Step 6: Acknowledgement number save karo."
+        ]
+    }
+};
+
+function showTraining(type) {
+    currentTraining = type;
+    currentStep = 0;
+
+    const training = trainingData[type];
+
+    if (!training) return;
+
+    document.getElementById("trainingContent").style.display = "block";
+    document.getElementById("trainingTitle").innerText = training.title;
+
+    document.getElementById("trainingSteps").innerHTML = `
+        <h3 id="stepNumber"></h3>
+        <p id="stepInstruction"></p>
+
+        <button onclick="previousTrainingStep()">Previous</button>
+        <button onclick="nextTrainingStep()">Next</button>
+        <button onclick="completeTraining()">Complete Training</button>
+    `;
+
+    displayTrainingStep();
+
+    document.getElementById("trainingContent")
+        .scrollIntoView({ behavior: "smooth" });
 }
 
-function changeSlide(direction) {
-    showSlide(currentSlide + direction);
+function displayTrainingStep() {
+    const steps = trainingData[currentTraining].steps;
+
+    document.getElementById("stepNumber").innerText =
+        "Step " + (currentStep + 1) + " of " + steps.length;
+
+    document.getElementById("stepInstruction").innerText =
+        steps[currentStep];
 }
 
-// Automatic Slideshow
-document.addEventListener("DOMContentLoaded", function () {
-    showSlide(0);
+function previousTrainingStep() {
+    if (currentStep > 0) {
+        currentStep--;
+        displayTrainingStep();
+    }
+}
 
-    setInterval(function () {
-        changeSlide(1);
-    }, 4000);
-});
+function nextTrainingStep() {
+    const steps = trainingData[currentTraining].steps;
+
+    if (currentStep < steps.length - 1) {
+        currentStep++;
+        displayTrainingStep();
+    }
+}
+
+function completeTraining() {
+    alert("Congratulations! You have completed the training.");
+    document.getElementById("trainingContent").style.display = "none";
+}
+
+window.showTraining = showTraining;
+window.displayTrainingStep = displayTrainingStep;
+window.previousTrainingStep = previousTrainingStep;
+window.nextTrainingStep = nextTrainingStep;
+window.completeTraining = completeTraining;
+
+}
