@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jan Seva Admin Login</title>
+    <title>Jan Seva Admin Panel</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: #f2f4f8;
@@ -27,7 +31,6 @@
             width: 100%;
             padding: 11px;
             margin: 8px 0;
-            box-sizing: border-box;
         }
 
         button {
@@ -38,7 +41,11 @@
             border-radius: 5px;
         }
 
-        h2, h1 {
+        button:hover {
+            background: #20569b;
+        }
+
+        h1, h2 {
             color: #123b70;
             text-align: center;
         }
@@ -57,6 +64,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 650px;
         }
 
         th, td {
@@ -72,13 +80,22 @@
 
         #message {
             text-align: center;
+            color: red;
+        }
+
+        #dashboardMessage {
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
 
+    <!-- ADMIN LOGIN -->
+
     <div class="login-box" id="loginBox">
+
         <h2>Admin Login</h2>
 
         <input type="text" id="username"
@@ -87,18 +104,31 @@
         <input type="password" id="password"
                placeholder="Enter Password">
 
-        <button onclick="login()">Login</button>
+        <button type="button" onclick="login()">Login</button>
 
         <p id="message"></p>
+
     </div>
 
+
+    <!-- ADMIN DASHBOARD -->
+
     <div id="dashboard">
+
         <h1>Jan Seva Admin Panel</h1>
 
-        <button onclick="loadApplications()">Refresh Applications</button>
-        <button onclick="logout()">Logout</button>
+        <button type="button" onclick="loadApplications()">
+            Refresh Applications
+        </button>
+
+        <button type="button" onclick="logout()">
+            Logout
+        </button>
+
+        <p id="dashboardMessage"></p>
 
         <div class="table-box">
+
             <table>
                 <thead>
                     <tr>
@@ -113,63 +143,139 @@
 
                 <tbody id="applicationList"></tbody>
             </table>
+
         </div>
+
     </div>
 
+
     <script>
-        const API_URL = "http://localhost:5075/api";
+
+        const API_URL = "http://127.0.0.1:5075/api";
+
+
+        // ADMIN LOGIN
 
         async function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const message = document.getElementById("message");
+
+            const username =
+                document.getElementById("username").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const message =
+                document.getElementById("message");
+
+            if (!username || !password) {
+                message.innerText =
+                    "Please enter username and password.";
+                return;
+            }
+
+            message.innerText = "Checking login...";
 
             try {
-                const response = await fetch(API_URL + "/admin/login", {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ username, password })
-                });
 
-                const result = await response.json();
+                const response = await fetch(
+                    API_URL + "/admin/login",
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+                    }
+                );
+
+                const result = await response.json().catch(() => ({}));
 
                 if (!response.ok) {
-                    message.innerText = result.message;
+                    message.innerText =
+                        result.message || "Login failed!";
                     return;
                 }
 
                 document.getElementById("loginBox").style.display = "none";
+
                 document.getElementById("dashboard").style.display = "block";
 
                 loadApplications();
 
             } catch (error) {
-                message.innerText = "Backend connection failed!";
+
+                console.error(error);
+
+                message.innerText =
+                    "Backend connection failed!";
+
             }
         }
 
+
+        // LOAD APPLICATIONS
+
         async function loadApplications() {
-            const list = document.getElementById("applicationList");
+
+            const list =
+                document.getElementById("applicationList");
+
+            const dashboardMessage =
+                document.getElementById("dashboardMessage");
+
+            list.innerHTML = "";
+
+            dashboardMessage.innerText =
+                "Loading applications...";
 
             try {
-                const response = await fetch(API_URL + "/applications", {
-                    credentials: "include"
-                });
 
-                if (response.status === 401 || response.status === 403) {
-                    alert("Please login again.");
-                    logout();
+                const response = await fetch(
+                    API_URL + "/applications",
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+                if (response.status === 401 ||
+                    response.status === 403) {
+
+                    dashboardMessage.innerText =
+                        "Login expired or Admin permission missing.";
+
+                    return;
+                }
+
+                if (!response.ok) {
+                    dashboardMessage.innerText =
+                        "Error loading applications: " +
+                        response.status;
                     return;
                 }
 
                 const applications = await response.json();
 
-                list.innerHTML = "";
+                if (!Array.isArray(applications)) {
+                    dashboardMessage.innerText =
+                        "Invalid application data.";
+                    return;
+                }
+
+                if (applications.length === 0) {
+                    dashboardMessage.innerText =
+                        "No applications found.";
+                    return;
+                }
+
+                dashboardMessage.innerText = "";
 
                 applications.forEach(app => {
+
                     const row = document.createElement("tr");
 
                     const values = [
@@ -181,42 +287,81 @@
                     ];
 
                     values.forEach(value => {
+
                         const cell = document.createElement("td");
-                        cell.textContent = value;
+
+                        cell.textContent = value ?? "";
+
                         row.appendChild(cell);
+
                     });
 
-                    const actionCell = document.createElement("td");
+                    const actionCell =
+                        document.createElement("td");
 
-                    const select = document.createElement("select");
+                    const select =
+                        document.createElement("select");
 
                     ["Pending", "Approved", "Rejected"].forEach(status => {
-                        const option = document.createElement("option");
+
+                        const option =
+                            document.createElement("option");
+
                         option.value = status;
                         option.textContent = status;
+
                         select.appendChild(option);
+
                     });
 
                     select.value = app.status;
 
-                    const button = document.createElement("button");
+                    const button =
+                        document.createElement("button");
+
+                    button.type = "button";
                     button.textContent = "Update";
-                    button.onclick = () => updateStatus(app.applicationNumber, select.value);
+
+                    button.onclick = function () {
+
+                        updateStatus(
+                            app.applicationNumber,
+                            select.value
+                        );
+
+                    };
 
                     actionCell.appendChild(select);
                     actionCell.appendChild(button);
+
                     row.appendChild(actionCell);
 
                     list.appendChild(row);
+
                 });
 
             } catch (error) {
-                alert("Unable to load applications.");
+
+                console.error(error);
+
+                dashboardMessage.innerText =
+                    "Backend connection failed!";
+
             }
         }
 
+
+        // UPDATE APPLICATION STATUS
+
         async function updateStatus(number, status) {
+
+            const dashboardMessage =
+                document.getElementById("dashboardMessage");
+
+            dashboardMessage.innerText = "Updating status...";
+
             try {
+
                 const response = await fetch(
                     API_URL + "/applications/" +
                     encodeURIComponent(number) + "/status",
@@ -230,32 +375,90 @@
                     }
                 );
 
+                const resultText = await response.text();
+
                 if (!response.ok) {
-                    alert("Status update failed!");
+
+                    dashboardMessage.innerText =
+                        "Status update failed!";
+
+                    alert(
+                        "Status update failed!\n" +
+                        "HTTP Error: " + response.status +
+                        "\nReason: " + resultText
+                    );
+
                     return;
                 }
 
-                alert("Status updated successfully!");
-                loadApplications();
+                let result = {};
+
+                try {
+                    result = JSON.parse(resultText);
+                } catch (error) {
+                    result.message = resultText;
+                }
+
+                dashboardMessage.innerText =
+                    result.message || "Status updated successfully!";
+
+                alert(
+                    "Status updated successfully!\n" +
+                    "Application ID: " + number +
+                    "\nNew Status: " + status
+                );
+
+                await loadApplications();
+
+                dashboardMessage.innerText =
+                    "Status updated successfully!";
 
             } catch (error) {
-                alert("Backend connection failed!");
+
+                console.error(error);
+
+                dashboardMessage.innerText =
+                    "Backend connection failed!";
+
+                alert("Error: " + error.message);
+
             }
         }
 
+
+        // ADMIN LOGOUT
+
         async function logout() {
+
             try {
-                await fetch(API_URL + "/admin/logout", {
-                    method: "POST",
-                    credentials: "include"
-                });
-            } finally {
-                document.getElementById("dashboard").style.display = "none";
-                document.getElementById("loginBox").style.display = "block";
-                document.getElementById("password").value = "";
-                document.getElementById("message").innerText = "You are logged out.";
+
+                await fetch(
+                    API_URL + "/admin/logout",
+                    {
+                        method: "POST",
+                        credentials: "include"
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
             }
+
+            document.getElementById("dashboard").style.display = "none";
+
+            document.getElementById("loginBox").style.display = "block";
+
+            document.getElementById("password").value = "";
+
+            document.getElementById("message").innerText =
+                "You are logged out.";
+
+            document.getElementById("applicationList").innerHTML = "";
+
         }
+
     </script>
 
 </body>
